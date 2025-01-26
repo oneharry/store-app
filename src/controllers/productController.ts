@@ -1,13 +1,13 @@
 import { Request, Response, NextFunction } from "express";
 import { CreateProductSchema, UpdateProductSchema } from "../schemas/validationSchema";
-import { registerUser } from "../services/productService";
+import { createProduct, getAllProducts, updateProduct, getProductById, deleteProduct } from "../services/productService";
 
 
-export const createProduct = async (req: Request, res: Response, next: NextFunction) => {
+export const createProducts = async (req: Request, res: Response, next: NextFunction) => {
     try {
         // validate request body data
-        const validatedUser = CreateProductSchema.parse(req.body);
-        const user = await registerUser(validatedUser);
+        const validatedProduct = CreateProductSchema.parse(req.body);
+        const user = await createProduct(validatedProduct);
 
         res.status(201).json({ message: 'User registered successfully' });
     } catch (err) {
@@ -15,14 +15,14 @@ export const createProduct = async (req: Request, res: Response, next: NextFunct
     }
 };
 
-export const updateProduct = async (req: Request, res: Response, next: NextFunction) => {
+export const editProduct = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const productId = req.params.id as string;
         // validate request body
-        const validatedUser = UpdateProductSchema.parse(req.body);
-        // register user
-        const user = await registerUser(validatedUser);
-        res.status(201).json({ message: 'User registered successfully' });
+        const validatedProduct = UpdateProductSchema.parse(req.body);
+        // update product
+        const product = await updateProduct(productId, validatedProduct);
+        res.status(201).json({ data: product });
     } catch (err) {
         res.status(500).json({ error: 'Registration failed' });
     }
@@ -30,32 +30,31 @@ export const updateProduct = async (req: Request, res: Response, next: NextFunct
 
 export const getProducts = async (req: Request, res: Response, next: NextFunction) => {
     try {
+        const products = await getAllProducts();
 
-        //const user = await registerUser();
+        res.status(200).json({ data: products });
+    } catch (err) {
+        res.status(500).json({ error: 'error fetching products' });
+    }
+};
 
-        res.status(201).json({ message: 'User registered successfully' });
+export const getProduct = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const productId = req.params.id as string;
+
+        const product = await getProductById(productId);
+
+        res.status(201).json({ data: product });
     } catch (err) {
         res.status(500).json({ error: 'Registration failed' });
     }
 };
 
-export const getProductById = async (req: Request, res: Response, next: NextFunction) => {
+export const removeProduct = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const productId = req.params.id as string;
 
-        //const user = await registerUser(validatedUser);
-
-        res.status(201).json({ message: 'User registered successfully' });
-    } catch (err) {
-        res.status(500).json({ error: 'Registration failed' });
-    }
-};
-
-export const deleteProduct = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const productId = req.params.id as string;
-
-        //const user = await registerUser(validatedUser);
+        const user = await deleteProduct(productId);
 
         res.status(201).json({ message: 'Product deleted successfully' });
     } catch (err) {

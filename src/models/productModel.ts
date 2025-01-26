@@ -15,4 +15,5 @@ const productSchema = new Schema<IProduct>(
 productSchema.index({ name: 1 });
 
 const Product = mongoose.model<IProduct>('Product', productSchema);
+
 export default Product;

@@ -6,3 +6,14 @@ export interface IUser {
     avatar?: string;
     createdAt: Date;
 }
+
+
+export interface IBlacklistedToken {
+    token: string;
+    expiresAt: Date;
+}
+
+export interface DecodedToken {
+    userId: string;
+    email: string;
+  }

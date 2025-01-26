@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { LoginSchema, RegisterUserSchema } from "../schemas/validationSchema";
-import { registerUser } from "../services/productService";
+import { registerUser } from "../services/userService";
 
 
 export const register = async (req: Request, res: Response, next: NextFunction) => {
