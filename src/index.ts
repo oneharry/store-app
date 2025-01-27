@@ -6,13 +6,14 @@ import * as bodyParser from "body-parser";
 import connectDB from "./config/db";
 import productRouter from "./routes/productRoute";
 import userRouter from "./routes/userRoute";
+import { errorMiddleware } from "./middlewares/errorMiddleware";
 
 dotenv.config();
 
 const server = async () => {
   try {
     // connectDB
-    // connectDB()
+    await connectDB()
 
     // Create Express app
     const app = express();
@@ -32,6 +33,9 @@ const server = async () => {
 
     app.use('/api', userRouter);
     app.use('/api', productRouter);
+
+    // error middleware, handles all endpoint errors
+    app.use(errorMiddleware);
 
     // Start the server
     const port = process.env.PORT || 3000;

@@ -3,11 +3,14 @@ import mongoose from 'mongoose';
 
 const connectDB = async () => {
   try {
-    const mongoDBUrl: string = process.env.MONGODB_URI;
-    console.log("MONGODB_URIk",mongoDBUrl);
-    await mongoose.connect(process.env.MONGODB_URI);
+    const encodedPassword = encodeURIComponent(process.env.MONGODB_USER_PASSWORD);
+const { MONGODB_USERNAME, MONGODB_DATABASE, MONGODB_CLUSTER } = process.env;
 
-    console.log('MongoDB connected');
+    const url = `mongodb+srv://${MONGODB_USERNAME}:${encodedPassword}@${MONGODB_CLUSTER}/${MONGODB_DATABASE}?retryWrites=true&w=majority`
+
+    await mongoose.connect(url);
+
+    console.log('Database connection established');
   } catch (error) {
     console.error('Error connecting to MongoDB:', error);
   }

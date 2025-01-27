@@ -1,52 +1,51 @@
 import { Request, Response, NextFunction } from "express";
 import { LoginSchema, RegisterUserSchema } from "../schemas/validationSchema";
-import { registerUser } from "../services/userService";
+import { getCurrentUser, registerUser, userLogin, userLogout } from "../services/userService";
+import { IUser, UserLogin } from "../interfaces/userInterface";
 
 
 export const register = async (req: Request, res: Response, next: NextFunction) => {
     try {
         // validate request body data
-        const validatedUser = RegisterUserSchema.parse(req.body);
+        const validatedUser = RegisterUserSchema.parse(req.body) as IUser;
         const user = await registerUser(validatedUser);
-
-        res.status(201).json({ message: 'User registered successfully' });
-    } catch (err) {
-        res.status(500).json({ error: 'Registration failed' });
+         res.status(201).json({ message: 'User registered successfully', data: user });
+    } catch (error) {
+        next(error);
     }
 };
 
 export const login = async (req: Request, res: Response, next: NextFunction) => {
     try {
         // validate request body
-        const validatedUser = LoginSchema.parse(req.body);
+        const validatedUser = LoginSchema.parse(req.body) as UserLogin;
         // register user
-        const user = await registerUser(validatedUser);
-        res.status(201).json({ message: 'User registered successfully' });
-    } catch (err) {
-        res.status(500).json({ error: 'Registration failed' });
+        const token = await userLogin(validatedUser);
+        res.status(201).json({ token });
+    } catch (error) {
+        next(error);
     }
 };
 
 export const logout = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const validatedUser = RegisterUserSchema.parse(req.body);
+        const token = req.headers.authorization?.split(' ')[1] as string;
+        await userLogout(token);
 
-        const user = await registerUser(validatedUser);
-
-        res.status(201).json({ message: 'User registered successfully' });
-    } catch (err) {
-        res.status(500).json({ error: 'Registration failed' });
+        res.status(201).json({ message: 'Logged out' });
+    } catch (error) {
+        next(error);
     }
 };
 
-export const getCurrentUser = async (req: Request, res: Response, next: NextFunction) => {
+export const currentUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const validatedUser = RegisterUserSchema.parse(req.body);
+        const userId = req.user.userId;
 
-        const user = await registerUser(validatedUser);
+        const user = await getCurrentUser(userId) 
 
-        res.status(201).json({ message: 'User registered successfully' });
-    } catch (err) {
-        res.status(500).json({ error: 'Registration failed' });
+        res.status(200).json({ data: user });
+    } catch (error) {
+        next(error);
     }
-};
+}; 

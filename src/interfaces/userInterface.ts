@@ -1,10 +1,13 @@
-export interface IUser {
+
+export interface IUser extends UserLogin {
     username: string;
-    email: string;
-    password: string;
     role: string;
     avatar?: string;
-    createdAt: Date;
+}
+
+export interface UserLogin {
+    email: string;
+    password: string;
 }
 
 

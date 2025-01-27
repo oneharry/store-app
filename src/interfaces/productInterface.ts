@@ -3,6 +3,8 @@ export interface IProduct {
     description: string;
     price: number;
     quantity: number;
-    createdAt: Date;
-    updatedAt: Date;
 }
+
+export type ProductUpdate = Partial<IProduct>;
+
+export type ProductResponse = IProduct

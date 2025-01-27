@@ -1,17 +1,20 @@
 import { Request, Response, NextFunction } from "express";
+import { ZodError } from "zod";
 import { CreateProductSchema, UpdateProductSchema } from "../schemas/validationSchema";
 import { createProduct, getAllProducts, updateProduct, getProductById, deleteProduct } from "../services/productService";
+import { handleZodError } from "../utils/errorUtils";
+import { IProduct } from "../interfaces/productInterface";
 
 
-export const createProducts = async (req: Request, res: Response, next: NextFunction) => {
+export const addProduct = async (req: Request, res: Response, next: NextFunction) => {
     try {
         // validate request body data
-        const validatedProduct = CreateProductSchema.parse(req.body);
-        const user = await createProduct(validatedProduct);
+        const validatedProduct = CreateProductSchema.parse(req.body) as IProduct;
+        const product = await createProduct(validatedProduct);
 
-        res.status(201).json({ message: 'User registered successfully' });
-    } catch (err) {
-        res.status(500).json({ error: 'Registration failed' });
+        res.status(201).json({ message: 'Product added successfully', data: product });
+    } catch (error) {
+        next(error);
     }
 };
 
@@ -23,8 +26,8 @@ export const editProduct = async (req: Request, res: Response, next: NextFunctio
         // update product
         const product = await updateProduct(productId, validatedProduct);
         res.status(201).json({ data: product });
-    } catch (err) {
-        res.status(500).json({ error: 'Registration failed' });
+    } catch (error) {
+        next(error);
     }
 };
 
@@ -33,8 +36,8 @@ export const getProducts = async (req: Request, res: Response, next: NextFunctio
         const products = await getAllProducts();
 
         res.status(200).json({ data: products });
-    } catch (err) {
-        res.status(500).json({ error: 'error fetching products' });
+    } catch (error) {
+        next(error);
     }
 };
 
@@ -44,9 +47,9 @@ export const getProduct = async (req: Request, res: Response, next: NextFunction
 
         const product = await getProductById(productId);
 
-        res.status(201).json({ data: product });
-    } catch (err) {
-        res.status(500).json({ error: 'Registration failed' });
+        res.status(200).json({ data: product });
+    } catch (error) {
+        next(error);
     }
 };
 
@@ -57,7 +60,7 @@ export const removeProduct = async (req: Request, res: Response, next: NextFunct
         const user = await deleteProduct(productId);
 
         res.status(201).json({ message: 'Product deleted successfully' });
-    } catch (err) {
-        res.status(500).json({ error: 'Registration failed' });
+    } catch (error) {
+        next(error);
     }
 };

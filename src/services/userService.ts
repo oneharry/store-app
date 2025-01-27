@@ -3,9 +3,10 @@ import User from '../models/userModel';
 import { HttpCustomError } from '../middlewares/errorMiddleware';
 import { generateToken } from '../utils/jwtUtils';
 import BlacklistedToken from '../models/blacklistedTokenModel';
+import { IUser, UserLogin } from '../interfaces/userInterface';
 
 
-export const registerUser = async (userData) => {
+export const registerUser = async (userData: IUser): Promise<IUser> => {
     try {
         const { username, email, password, avatar } = userData;
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -23,11 +24,11 @@ export const registerUser = async (userData) => {
 
         return await user.save();
     } catch (error) {
-        throw error;
+        throw new HttpCustomError(error?.status || 500, error?.message || 'An unexpected error occurred');
     }
 }
 
-export const userLogin = async (userData) => {
+export const userLogin = async (userData: UserLogin): Promise<string> => {
     try {
         const { email, password } = userData;
         const user = await User.findOne({ email })
@@ -45,11 +46,11 @@ export const userLogin = async (userData) => {
         const token = generateToken(user.id, email);
         return token;
     } catch (error) {
-        throw error;
+        throw new HttpCustomError(error?.status || 500, error?.message || 'An unexpected error occurred');
     }
 }
 
-export const userLogout = async (token) => {
+export const userLogout = async (token: string): Promise<void> => {
     try {
         const blacklistedToken = new BlacklistedToken({
             token,
@@ -58,32 +59,15 @@ export const userLogout = async (token) => {
 
         await blacklistedToken.save();
     } catch (error) {
-        throw error;
+        throw new HttpCustomError(error?.status || 500, error?.message || 'An unexpected error occurred');
     }
 }
 
-export const getCurrentUser = async (email: string) => {
+export const getCurrentUser = async (userId: string): Promise<IUser> => {
     try {
-        const user = await User.find({ email })
+        const user = await User.findOne({ _id: userId })
+        return user;
     } catch (error) {
-        throw error;
-    }
-}
-
-export const registerUse = async (userData) => {
-    try {
-        const { username, email, password, avatar } = userData;
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        const user = new User({
-            username,
-            email,
-            password: hashedPassword,
-            avatar
-        });
-
-        return await user.save();
-    } catch (error) {
-        throw error;
+        throw new HttpCustomError(error?.status || 500, error?.message || 'An unexpected error occurred');
     }
 }
