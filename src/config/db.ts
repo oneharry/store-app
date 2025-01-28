@@ -6,9 +6,8 @@ const connectDB = async () => {
 const { MONGODB_USERNAME, MONGODB_DATABASE, MONGODB_CLUSTER } = process.env;
 
     const url = `mongodb+srv://${MONGODB_USERNAME}:${encodedPassword}@${MONGODB_CLUSTER}/${MONGODB_DATABASE}?retryWrites=true&w=majority`
-    const ur = 'mongodb://mongodb:27017/storeapi';
-    console.log("ENV URL", url);
-    await mongoose.connect(ur);
+    console.log("URL", url);
+    await mongoose.connect(url);
 
     console.log('Database connection established');
   } catch (error) {
