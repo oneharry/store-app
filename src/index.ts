@@ -12,7 +12,7 @@ dotenv.config();
 
 const server = async () => {
   try {
-    // connectDB
+    // connect to database
     await connectDB()
 
     // Create Express app
@@ -30,10 +30,11 @@ const server = async () => {
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true }));
 
-
+    // routes
     app.use('/api', userRouter);
     app.use('/api', productRouter);
 
+  
     // error middleware, handles all endpoint errors
     app.use(errorMiddleware);
 

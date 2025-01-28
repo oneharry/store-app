@@ -2,11 +2,10 @@ import mongoose from 'mongoose';
 
 const connectDB = async () => {
   try {
-    const encodedPassword = encodeURIComponent(process.env.MONGODB_USER_PASSWORD);
-const { MONGODB_USERNAME, MONGODB_DATABASE, MONGODB_CLUSTER } = process.env;
+    const { MONGODB_USERNAME, MONGODB_DATABASE, MONGODB_CLUSTER, MONGODB_USER_PASSWORD } = process.env;
+    const encodedPassword = encodeURIComponent(MONGODB_USER_PASSWORD);
 
     const url = `mongodb+srv://${MONGODB_USERNAME}:${encodedPassword}@${MONGODB_CLUSTER}/${MONGODB_DATABASE}?retryWrites=true&w=majority`
-    console.log("URL", url);
     await mongoose.connect(url);
 
     console.log('Database connection established');

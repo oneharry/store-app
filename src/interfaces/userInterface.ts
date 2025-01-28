@@ -7,13 +7,12 @@ export interface IUser {
 }
 export type UserLogin = Omit<IUser, 'username' | 'role' | 'avatar'>
 
-
 export interface IBlacklistedToken {
     token: string;
     expiresAt: Date;
 }
 
-export interface DecodedToken {
+export type DecodedToken = {
     userId: string;
     email: string;
   }
