@@ -7,4 +7,4 @@ export interface IProduct {
 
 export type ProductUpdate = Partial<IProduct>;
 
-export type ProductResponse = IProduct
+export type ProductResponse = IProduct;

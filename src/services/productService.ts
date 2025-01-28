@@ -1,5 +1,3 @@
-import * as bcrypt from 'bcrypt';
-import User from '../models/userModel';
 import Product from '../models/productModel';
 import { HttpCustomError } from '../middlewares/errorMiddleware';
 import { IProduct, ProductResponse, ProductUpdate } from '../interfaces/productInterface';
@@ -25,7 +23,8 @@ export const updateProduct = async (productId: string, productData: ProductUpdat
             throw new HttpCustomError(404, "Product not found")
         }
 
-        const updatedProduct = Object.assign(product, productData)
+        Object.assign(product, productData)
+        const updatedProduct = await product.save();
         return updatedProduct;
 
     } catch (error) {

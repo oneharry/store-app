@@ -1,14 +1,11 @@
-
-export interface IUser extends UserLogin {
+export interface IUser {
     username: string;
     role: string;
     avatar?: string;
-}
-
-export interface UserLogin {
     email: string;
     password: string;
 }
+export type UserLogin = Omit<IUser, 'username' | 'role' | 'avatar'>
 
 
 export interface IBlacklistedToken {
