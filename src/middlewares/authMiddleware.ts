@@ -15,15 +15,20 @@ export const Auth = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const authHeader = req.headers.authorization;
         if (!authHeader) {
-            res.status(401).json({ error: 'Authorization header missing' });
-            return
+            res.status(401).json({ error: "Authorization header missing" });
+            return;
         }
 
-        const token = authHeader.split(' ')[1];
+        const token = authHeader.split(" ")[1];
+        if (!token) {
+            res.status(401).json({ error: "Missing authorization token" });
+            return;
+        }
+
 
         const isBlacklisted = await isTokenBlacklisted(token);
         if (isBlacklisted) {
-            res.status(401).json({ error: 'You are currently logged out, login again' });
+            res.status(403).json({ error: "Token is no longer valid"});
             return
         }
 
@@ -31,12 +36,13 @@ export const Auth = async (req: Request, res: Response, next: NextFunction) => {
         (req as Request & { user: DecodedToken }).user = decodedToken;
         next(); 
     } catch (error) {
-        res.status(401).json({ error: error?.message });
+        res.status(401).json({ error: error?.message || "Authentication failed!"});
     }
 };
 
 
-const isTokenBlacklisted = async (token: string): Promise<boolean> => {
+export const isTokenBlacklisted = async (token: string): Promise<boolean> => {
     const blacklistedToken = await BlacklistedToken.findOne({ token: token })
     return !!blacklistedToken;
 }
+
