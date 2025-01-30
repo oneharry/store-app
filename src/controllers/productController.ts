@@ -3,6 +3,7 @@ import { CreateProductSchema, UpdateProductSchema } from "../schemas/inputValida
 import { createProduct, getAllProducts, updateProduct, getProductById, deleteProduct } from "../services/productService";
 import { IProduct } from "../types/productType";
 import { HttpCustomError } from "../utils/errorUtils";
+import { validateProductId } from "../utils/validateUtils";
 
 
 /**
@@ -45,12 +46,8 @@ export const addProduct = async (req: Request, res: Response, next: NextFunction
  */
 export const editProduct = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        // product ID in the params
-        // throws error if productId is null or undefined
-        const productId = req.params.id as string;
-        if (!productId) {
-            throw new HttpCustomError(400, 'Product ID is required');
-        }
+        // checks productId is valid
+        const productId = validateProductId(req.params.id as string)
 
         // validate request body using UpdateProductSchema
         const validatedProduct = UpdateProductSchema.parse(req.body);
@@ -100,12 +97,8 @@ export const getProducts = async (req: Request, res: Response, next: NextFunctio
  */
 export const getProduct = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        // product ID in the params
-        // throws error if productId is null or undefined
-        const productId = req.params.id as string;
-        if (!productId) {
-            throw new HttpCustomError(400, 'Product ID is required');
-        }
+        // checks productId is valid
+        const productId = validateProductId(req.params.id as string);
 
         const product = await getProductById(productId);
 
@@ -130,12 +123,8 @@ export const getProduct = async (req: Request, res: Response, next: NextFunction
  */
 export const removeProduct = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        // product ID in the params
-        // throws error if productId is null or undefined
-        const productId = req.params.id as string;
-        if (!productId) {
-            throw new HttpCustomError(400, 'Product ID is required');
-        }
+        // checks productId is valid
+        const productId = validateProductId(req.params.id as string)
 
         const user = await deleteProduct(productId);
 

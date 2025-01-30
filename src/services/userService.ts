@@ -23,7 +23,7 @@ export const registerUser = async (userData: IUser): Promise<IUser> => {
         // throws error if email has been registered
         const existingUser = await User.findOne({ email })
         if (existingUser) {
-            throw new HttpCustomError(400, "Email is already in use");
+            throw new HttpCustomError(400, "This email is already registered. Please use a different email.");
         }
 
         // create user, and return saved user
@@ -34,7 +34,7 @@ export const registerUser = async (userData: IUser): Promise<IUser> => {
         });
         return await user.save();
     } catch (error) {
-        throw new HttpCustomError(error?.status || 500, error?.message || 'An unexpected error occurred');
+        throw new HttpCustomError(error?.status || 500, error?.message || "Failed to register user, try again later.");
     }
 }
 
@@ -58,7 +58,7 @@ export const userLogin = async (userData: UserLogin): Promise<string> => {
 
         // throws error is user is not found
         if (!user) {
-            throw new HttpCustomError(404, 'Profile do not exist');
+            throw new HttpCustomError(404, "No account found with this email.");
         }
 
         // throws error if passord is incorrect
@@ -68,12 +68,10 @@ export const userLogin = async (userData: UserLogin): Promise<string> => {
         }
 
         // generate jwt token.
-        const token = generateToken(user.id, email);
+        return generateToken(user.id, email);
 
-        // return token
-        return token;
     } catch (error) {
-        throw new HttpCustomError(error?.status || 500, error?.message || 'An unexpected error occurred');
+        throw new HttpCustomError(error?.status || 500, error?.message || "Login failed, try again later.");
     }
 }
 
@@ -91,12 +89,12 @@ export const userLogout = async (token: string): Promise<void> => {
         // add token to blacklist
         const blacklistedToken = new BlacklistedToken({
             token,
-            expiresAt: new Date(Date.now() + 60 * 60 * 1000),
+            expiresAt: new Date(Date.now() + 12 + 60 * 60 * 1000),
         });
 
         await blacklistedToken.save();
     } catch (error) {
-        throw new HttpCustomError(error?.status || 500, error?.message || 'An unexpected error occurred');
+        throw new HttpCustomError(error?.status || 500, error?.message || "An error occurred while logging out.");
     }
 }
 
@@ -114,10 +112,10 @@ export const getCurrentUser = async (userId: string): Promise<IUser> => {
 
         //throw error is user not found
         if (!user) {
-            throw new HttpCustomError(404, "User not found");
+            throw new HttpCustomError(404, "User not found, login again");
         }
         return user;
     } catch (error) {
-        throw new HttpCustomError(error?.status || 500, error?.message || 'An unexpected error occurred');
+        throw new HttpCustomError(error?.status || 500, error?.message || "Failed to retrieve user profile, try again.");
     }
 }

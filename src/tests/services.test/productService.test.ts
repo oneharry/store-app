@@ -40,7 +40,7 @@ describe("Product Service", () => {
         });
 
         it("should throw an HttpCustomError if saving fails", async () => {
-            const dbError = new HttpCustomError(500, "Database error");
+            const error = new HttpCustomError(500, "An error occurred while saving the product, try again later");
             const productData: IProduct = {
                 name: "Product",
                 description: "A test product",
@@ -49,10 +49,12 @@ describe("Product Service", () => {
             };
 
             (Product as unknown as jest.Mock).mockImplementation(() => ({
-                save: jest.fn().mockRejectedValue(new HttpCustomError(500, "Database error")),
+                save: jest.fn().mockRejectedValue(error),
             }));
 
-            await expect(createProduct(productData)).rejects.toThrow(new HttpCustomError(500, "Database error"));
+            await expect(createProduct(productData)).rejects.toThrow(
+                new HttpCustomError(500, "An error occurred while saving the product, try again later")
+            );
         });
     });
 
@@ -111,7 +113,7 @@ describe("Product Service", () => {
             (Product.findOne as jest.Mock).mockResolvedValue(null);
 
             await expect(updateProduct(productId, productData)).rejects.toThrow(
-                new HttpCustomError(404, "Product not found")
+                new HttpCustomError(404, "Product not found or has been removed")
             );
         });
 
@@ -138,11 +140,11 @@ describe("Product Service", () => {
 
             // Mock the save method to simulate save failure 
             existingProduct.save = jest.fn().mockRejectedValue(
-                new HttpCustomError(500, "Database error")
+                new HttpCustomError(500, "An error occurred while fetching products")
             );
 
             await expect(updateProduct(productId, productData)).rejects.toThrow(
-                new HttpCustomError(500, "Database error")
+                new HttpCustomError(500, "An error occurred while fetching products")
             );
         });
     });
@@ -206,7 +208,7 @@ describe("Product Service", () => {
             (Product.findOne as jest.Mock).mockResolvedValue(null);
 
             await expect(getProductById(productId)).rejects.toThrow(
-                new HttpCustomError(404, "Product not found")
+                new HttpCustomError(404, "No product found with the `id`")
             );
         });
 
@@ -249,19 +251,19 @@ describe("Product Service", () => {
             (Product.findByIdAndDelete as jest.Mock).mockResolvedValue(null);
 
             await expect(deleteProduct(productId)).rejects.toThrow(
-                new HttpCustomError(404, "Product not found")
+                new HttpCustomError(404, "Product already deleted or does not exist")
             );
         });
 
         it("should throw an HttpCustomError if deleting the product fails", async () => {
             const productId = "102";
-            const dbError = new HttpCustomError(500, "Database error");
+            const dbError = new HttpCustomError(500, "An error occurred while deleting the product, try again later");
 
             // Mocking findByIdAndDelete to simulate db operation failure
             (Product.findByIdAndDelete as jest.Mock).mockRejectedValue(dbError);
 
             await expect(deleteProduct(productId)).rejects.toThrow(
-                new HttpCustomError(500, "Database error")
+                new HttpCustomError(500, "An error occurred while deleting the product, try again later")
             );
         });
     });

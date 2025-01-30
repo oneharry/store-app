@@ -16,7 +16,7 @@ export const createProduct = async (productData: IProduct): Promise<ProductRespo
 
         return await product.save();
     } catch (error) {
-        throw new HttpCustomError(error.status || 500, error?.message );
+        throw new HttpCustomError(error?.status || 500, error?.message || "An error occurred while saving the product, try again later");
     }
 }
 
@@ -37,18 +37,17 @@ export const updateProduct = async (productId: string, productData: ProductUpdat
 
         // throw error if product is not found
         if (!product) {
-            throw new HttpCustomError(404, "Product not found")
+            throw new HttpCustomError(404, "Product not found or has been removed")
         }
     
         // update the product with the data
         Object.assign(product, productData)
 
         //save and return the updated product
-        const updatedProduct = await product.save();
-        return updatedProduct;
+        return await product.save();
 
     } catch (error) {
-        throw new HttpCustomError(error?.status || 500, error?.message || 'An unexpected error occurred');
+        throw new HttpCustomError(error?.status || 500, error?.message || "An error occurred while updating the product, try again later");
     }
 }
 
@@ -66,7 +65,7 @@ export const getAllProducts = async (): Promise<ProductResponse[]> => {
 
         return products;
     } catch (error) {
-        throw new HttpCustomError(error?.status || 500, error?.message || 'An unexpected error occurred');
+        throw new HttpCustomError(error?.status || 500, error?.message || "An error occurred while fetching products");
     }
 }
 
@@ -86,12 +85,12 @@ export const getProductById = async (productId: string): Promise<ProductResponse
 
         // throw an error id product is not found
         if (!product) {
-            throw new HttpCustomError(404, "Product not found" );
+            throw new HttpCustomError(404, "No product found with the `id`" );
         }
     
         return product;
     } catch (error) {
-        throw new HttpCustomError(error?.status || 500, error?.message || 'An unexpected error occurred');
+        throw new HttpCustomError(error?.status || 500, error?.message || "An error occurred while fetching product");
     }
 }
 
@@ -110,11 +109,11 @@ export const deleteProduct = async (productId: string): Promise<ProductResponse>
 
         // throws error if product not found
         if (!product) {
-            throw new HttpCustomError(404, 'Product not found');
+            throw new HttpCustomError(404, "Product already deleted or does not exist");
         }
 
         return product;
     } catch (error) {
-        throw new HttpCustomError(error?.status || 500, error?.message || 'An unexpected error occurred');
+        throw new HttpCustomError(error?.status || 500, error?.message || "An error occurred while deleting the product, try again later");
     }
 }

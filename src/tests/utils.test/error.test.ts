@@ -3,14 +3,10 @@ import { ZodError, ZodInvalidTypeIssue } from 'zod';
 
 
 describe("Error Utils", () => {
-    afterAll(() => {
-        jest.resetAllMocks()
-    });
 
     describe("handleZodError", () => {
         it("should return the first validation error message", () => {
             // Mock ZodError with input validation errors
-            
             const mockZodError = new ZodError<ZodInvalidTypeIssue>([
                 { message: "Invalid email address", path: ["email"], code: "invalid_type", expected: "string", received: "undefined" },
                 { message: "Password is required", path: ["password"], code: "custom" }

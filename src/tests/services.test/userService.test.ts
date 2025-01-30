@@ -53,7 +53,7 @@ describe("User Service", () => {
             (User.findOne as jest.Mock).mockResolvedValue(existingUser);
 
             await expect(registerUser(userData)).rejects.toThrow(
-                new HttpCustomError(400, "Email is already in use")
+                new HttpCustomError(400, "This email is already registered. Please use a different email.")
             );
         });
 
@@ -65,12 +65,12 @@ describe("User Service", () => {
                 role: "user"
             };
 
-            const dbError = new HttpCustomError(500, "Server error");
+            const dbError = new HttpCustomError(500, "Failed to register user, try again later.");
             // Simulating bcrypt hash failure
             (bcrypt.hash as jest.Mock).mockRejectedValue(dbError);
 
             await expect(registerUser(userData)).rejects.toThrow(
-                new HttpCustomError(500, "Server error")
+                new HttpCustomError(500, "Failed to register user, try again later.")
             );
         });
     });
@@ -107,7 +107,7 @@ describe("User Service", () => {
             (User.findOne as jest.Mock).mockResolvedValue(null);
 
             await expect(userLogin(userData)).rejects.toThrow(
-                new HttpCustomError(404, "Profile do not exist")
+                new HttpCustomError(404, "No account found with this email.")
             );
         });
 
@@ -138,12 +138,12 @@ describe("User Service", () => {
                 password: "password",
             };
 
-            const dbError = new HttpCustomError(500, "Database error");
+            const dbError = new HttpCustomError(500, "Login failed, try again later.");
             // Simulating DB failure
             (User.findOne as jest.Mock).mockRejectedValue(dbError);
 
             await expect(userLogin(userData)).rejects.toThrow(
-                new HttpCustomError(500, "Database error")
+                new HttpCustomError(500, "Login failed, try again later.")
             );
         });
     });
@@ -161,12 +161,12 @@ describe("User Service", () => {
 
         it("should throw an error if something goes wrong during logout", async () => {
             const token = "jwtTokenstring";
-            const dbError = new HttpCustomError(500, "Database error");
+            const dbError = new HttpCustomError(500, "An error occurred while logging out.");
             // Mocking to Simulate DB failure
             (BlacklistedToken.prototype.save as jest.Mock).mockRejectedValue(dbError);
 
             await expect(userLogout(token)).rejects.toThrow(
-                new HttpCustomError(500, "Database error")
+                new HttpCustomError(500, "An error occurred while logging out.")
             );
         });
     });
@@ -190,19 +190,19 @@ describe("User Service", () => {
             (User.findOne as jest.Mock).mockResolvedValue(null);
 
             await expect(getCurrentUser(userId)).rejects.toThrow(
-                new HttpCustomError(404, "User not found")
+                new HttpCustomError(404, "User not found, login again")
             );
         });
 
         it("should throw a server error if something goes wrong during fetching current user", async () => {
             const userId = "101";
-            const dbError = new HttpCustomError(500, "Database error");
+            const dbError = new HttpCustomError(500, "Failed to retrieve user profile, try again.");
 
             // Mock findOne, simulate DB failure
             (User.findOne as jest.Mock).mockRejectedValue(dbError);
 
             await expect(getCurrentUser(userId)).rejects.toThrow(
-                new HttpCustomError(500, "Database error")
+                new HttpCustomError(500, "Failed to retrieve user profile, try again.")
             );
         });
     });
