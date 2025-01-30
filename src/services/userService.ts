@@ -1,9 +1,9 @@
 import * as bcrypt from 'bcrypt';
 import User from '../models/userModel';
-import { HttpCustomError } from '../middlewares/errorMiddleware';
+import { HttpCustomError } from '../utils/errorUtils';
 import { generateToken } from '../utils/jwtUtils';
 import BlacklistedToken from '../models/blacklistedTokenModel';
-import { IUser, UserLogin } from '../interfaces/userInterface';
+import { IUser, UserLogin } from '../types/userType';
 
 
 /**
@@ -16,7 +16,7 @@ import { IUser, UserLogin } from '../interfaces/userInterface';
  */
 export const registerUser = async (userData: IUser): Promise<IUser> => {
     try {
-        const { username, email, password, avatar } = userData;
+        const { username, email, password } = userData;
         // hash raw password using bcrypt
         const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -30,8 +30,7 @@ export const registerUser = async (userData: IUser): Promise<IUser> => {
         const user = new User({
             username,
             email,
-            password: hashedPassword,
-            avatar
+            password: hashedPassword
         });
         return await user.save();
     } catch (error) {
@@ -112,6 +111,11 @@ export const getCurrentUser = async (userId: string): Promise<IUser> => {
     try {
         // fetch user usig userId
         const user = await User.findOne({ _id: userId })
+
+        //throw error is user not found
+        if (!user) {
+            throw new HttpCustomError(404, "User not found");
+        }
         return user;
     } catch (error) {
         throw new HttpCustomError(error?.status || 500, error?.message || 'An unexpected error occurred');

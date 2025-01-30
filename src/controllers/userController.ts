@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from "express";
-import { LoginSchema, RegisterUserSchema } from "../schemas/validationSchema";
+import { LoginSchema, RegisterUserSchema } from "../schemas/inputValidationSchema";
 import { getCurrentUser, registerUser, userLogin, userLogout } from "../services/userService";
-import { IUser, UserLogin } from "../interfaces/userInterface";
+import { IUser, UserLogin } from "../types/userType";
+import { HttpCustomError } from "../middlewares/errorMiddleware";
 
 
 /**
@@ -21,7 +22,7 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
         // validate request body data
         const validatedUser = RegisterUserSchema.parse(req.body) as IUser;
         const user = await registerUser(validatedUser);
-         res.status(201).json({ message: 'User registered successfully', data: user });
+        res.status(201).json({ message: 'User registered successfully', data: user });
     } catch (error) {
         next(error);
     }
@@ -68,6 +69,10 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
 export const logout = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const token = req.headers.authorization?.split(' ')[1] as string;
+        if (!token) {
+            throw new HttpCustomError(400, 'No token provided');
+        }
+
         await userLogout(token);
 
         res.status(200).json({ message: 'Logged out' });
@@ -93,8 +98,11 @@ export const logout = async (req: Request, res: Response, next: NextFunction) =>
 export const currentUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const userId = req.user.userId;
+        if (!userId) {
+            throw new HttpCustomError(400, 'No signed in user');
+        }
 
-        const user = await getCurrentUser(userId) 
+        const user = await getCurrentUser(userId)
 
         res.status(200).json({ data: user });
     } catch (error) {

@@ -1,5 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
-import { IBlacklistedToken } from '../interfaces/userInterface';
+import { IBlacklistedToken } from '../types/userType';
 
 const blacklistedTokenSchema = new Schema<IBlacklistedToken>(
   {

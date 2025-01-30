@@ -1,18 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { ZodError } from 'zod';
 import { handleZodError } from '../utils/errorUtils';
-
-
-export class HttpCustomError extends Error {
-  public status: number;
-  public message: string;
-
-  constructor(status: number, message: string) {
-    super(message);
-    this.status = status;
-    this.message = message;
-  }
-}
+import { HttpCustomError } from '../utils/errorUtils';
 
 
 export const errorMiddleware = (
@@ -32,3 +21,5 @@ export const errorMiddleware = (
     res.status(status).json({ error: message });
   }
 };
+
+

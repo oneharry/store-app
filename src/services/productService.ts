@@ -1,6 +1,6 @@
 import Product from '../models/productModel';
-import { HttpCustomError } from '../middlewares/errorMiddleware';
-import { IProduct, ProductResponse, ProductUpdate } from '../interfaces/productInterface';
+import { HttpCustomError } from '../utils/errorUtils';
+import { IProduct, ProductResponse, ProductUpdate } from '../types/productType';
 
 
 /**

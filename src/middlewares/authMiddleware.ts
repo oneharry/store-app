@@ -1,7 +1,7 @@
 import * as jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 import BlacklistedToken from '../models/blacklistedTokenModel';
-import { DecodedToken } from '../interfaces/userInterface';
+import { DecodedToken } from '../types/userType';
 
 declare global {
     namespace Express {
