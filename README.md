@@ -52,10 +52,11 @@ cd store-app
     See the complete usage  [Documentation](https://postmanlink.com)
 
 ## Testing
-    To run the test
-    ```bash
+1. Run unit test
+    ``` bash
     npm test
     ```
+
 
 ## Contribution
     If you would like to contribute:
