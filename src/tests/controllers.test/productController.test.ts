@@ -38,7 +38,7 @@ describe("Product Controllers", () => {
     });
 
     afterEach(() => {
-        jest.resetAllMocks();
+        jest.resetAllMocks()
     });
 
 
@@ -107,7 +107,7 @@ describe("Product Controllers", () => {
 
     describe("editProduct", () => {
         it("should update a product and return 200", async () => {
-            const productId = "12345";
+            const productId = "102";
             const updatedProduct: IProduct = {
                 name: "Updated Product",
                 description: "Updated description",
@@ -255,7 +255,7 @@ describe("Product Controllers", () => {
 
     describe("removeProduct", () => {
         it("should delete a product and return 200", async () => {
-            const productId = "12345";
+            const productId = "102";
             const user = { message: "Product deleted successfully" };
 
             mockRequest.params = { id: productId };
@@ -278,7 +278,7 @@ describe("Product Controllers", () => {
 
         it("should call next() with an error if deleteProduct fails", async () => {
             const serviceError = new HttpCustomError(500, "Service error");
-            const productId = "12345";
+            const productId = "102";
 
             mockRequest.params = { id: productId };
             (deleteProduct as jest.Mock).mockRejectedValue(serviceError);

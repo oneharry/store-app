@@ -36,8 +36,9 @@ describe("User Controllers", () => {
         nextFunction = jest.fn();
     });
 
+    // clean up after each test
     afterEach(() => {
-        jest.resetAllMocks();
+        jest.resetAllMocks()
     });
 
 

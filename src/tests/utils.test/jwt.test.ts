@@ -7,38 +7,46 @@ jest.mock('jsonwebtoken', () => ({
 }));
 
 describe("JWT Utils", () => {
+    afterAll(() => {
+        jest.resetAllMocks()
+    });
+
     describe("generateToken", () => {
-        const mockUserId = "12345";
-        const mockEmail = "test@example.com";
-        const mockJwtSecret = "secret";
-        const mockToken = "mockJwtToken";
-    
+        const userId = "102";
+        const email = "user@mail.com";
+        const token = "mockJwtToken";
+
         beforeAll(() => {
-            // mocking jwt.sign to return a mock token
-            (jwt.sign as jest.Mock).mockReturnValue(mockToken);
+            (jwt.sign as jest.Mock).mockReturnValue(token);
             process.env.JWT_SECRET = "mockJWTSecret";
         });
-    
+
+        afterAll(() => {
+            jest.restoreAllMocks();
+            jest.clearAllMocks();
+            jest.resetModules();
+        });
+
         it("should generate a JWT token with valid data", () => {
-            const token = generateToken(mockUserId, mockEmail);
-    
+            const token = generateToken(userId, email);
+
             // Expect jwt.sign to be called with the correct parameters
             expect(jwt.sign).toHaveBeenCalledWith(
-                { userId: mockUserId, email: mockEmail },
+                { userId: userId, email: email },
                 process.env.JWT_SECRET,
                 { expiresIn: '12h' }
             );
-    
-            expect(token).toBe(mockToken);
+
+            expect(token).toBe(token);
         });
-    
+
         it("should throw an error if token generation fails", () => {
             // Mock jwt.sign to throw an error
             (jwt.sign as jest.Mock).mockImplementationOnce(() => {
                 throw new Error("Token generation failed");
             });
-    
-            expect(() => generateToken(mockUserId, mockEmail)).toThrowError("Token generation failed");
+
+            expect(() => generateToken(userId, email)).toThrow("Token generation failed");
         });
     });
 })

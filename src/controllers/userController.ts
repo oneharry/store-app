@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { LoginSchema, RegisterUserSchema } from "../schemas/inputValidationSchema";
 import { getCurrentUser, registerUser, userLogin, userLogout } from "../services/userService";
 import { IUser, UserLogin } from "../types/userType";
-import { HttpCustomError } from "../middlewares/errorMiddleware";
+import { HttpCustomError } from "../utils/errorUtils";
 
 
 /**

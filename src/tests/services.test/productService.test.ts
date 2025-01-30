@@ -7,8 +7,8 @@ import { HttpCustomError } from "../../utils/errorUtils";
 jest.mock("../../models/productModel");
 
 describe("Product Service", () => {
-    afterEach(() => {
-        jest.resetAllMocks();
+    afterAll(() => {
+        jest.resetAllMocks()
     });
 
     describe("createProduct", () => {
@@ -63,7 +63,7 @@ describe("Product Service", () => {
         });
 
         it("should return the updated product when data is valid", async () => {
-            const productId = "12345";
+            const productId = "102";
             const productData: ProductUpdate = {
                 name: "Product",
                 description: "An updated info about product",
@@ -99,7 +99,7 @@ describe("Product Service", () => {
         });
 
         it("should throw an HttpCustomError if the product is not found", async () => {
-            const productId = "12345";
+            const productId = "102";
             const productData: ProductUpdate = {
                 name: "Product",
                 description: "An updated info about product",
@@ -116,7 +116,7 @@ describe("Product Service", () => {
         });
 
         it("should throw an HttpCustomError if saving the updated product fails", async () => {
-            const productId = "12345";
+            const productId = "102";
             const productData: ProductUpdate = {
                 name: "Product",
                 description: "An updated info about product",
@@ -186,7 +186,7 @@ describe("Product Service", () => {
         });
 
         it("should return a product when the product is found", async () => {
-            const productId = "12345";
+            const productId = "102";
             const product = { _id: productId, name: "Product", description: "A test product", price: 1500, quantity: 30 };
 
             // Mock findOne method to return a product
@@ -200,7 +200,7 @@ describe("Product Service", () => {
         });
 
         it("should throw an HttpCustomError if the product is not found", async () => {
-            const productId = "12345";
+            const productId = "102";
 
             // Mock findOne to return null (product not found)
             (Product.findOne as jest.Mock).mockResolvedValue(null);
@@ -211,7 +211,7 @@ describe("Product Service", () => {
         });
 
         it("should throw an HttpCustomError if fetching the product fails", async () => {
-            const productId = "12345";
+            const productId = "102";
             const dbError = new HttpCustomError(500, "Database error");
 
             // Mock findOne to simulate a failure
@@ -229,7 +229,7 @@ describe("Product Service", () => {
         });
 
         it("should return the deleted product when the product is found", async () => {
-            const productId = "12345";
+            const productId = "102";
             const product = { _id: productId, name: "Product", description: "A test product", price: 1500, quantity: 30 };
 
             // Mock the findByIdAndDelete method to simulate deleting and return the product
@@ -243,7 +243,7 @@ describe("Product Service", () => {
         });
 
         it("should throw an HttpCustomError if the product is not found", async () => {
-            const productId = "12345";
+            const productId = "102";
 
             // Mocking findByIdAndDelete to return null - product not found
             (Product.findByIdAndDelete as jest.Mock).mockResolvedValue(null);
@@ -254,7 +254,7 @@ describe("Product Service", () => {
         });
 
         it("should throw an HttpCustomError if deleting the product fails", async () => {
-            const productId = "12345";
+            const productId = "102";
             const dbError = new HttpCustomError(500, "Database error");
 
             // Mocking findByIdAndDelete to simulate db operation failure

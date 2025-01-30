@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { CreateProductSchema, UpdateProductSchema } from "../schemas/inputValidationSchema";
 import { createProduct, getAllProducts, updateProduct, getProductById, deleteProduct } from "../services/productService";
 import { IProduct } from "../types/productType";
-import { HttpCustomError } from "../middlewares/errorMiddleware";
+import { HttpCustomError } from "../utils/errorUtils";
 
 
 /**

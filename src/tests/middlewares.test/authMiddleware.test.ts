@@ -22,6 +22,10 @@ describe("Middleware", () => {
             });
         });
 
+        afterAll(() => {
+            jest.resetAllMocks()
+        });
+
         it('should return 401 if Authorization header is missing', async () => {
             const response = await request(app).get('/api/products');
             expect(response.status).toBe(401);

@@ -3,6 +3,10 @@ import { ZodError, ZodInvalidTypeIssue } from 'zod';
 
 
 describe("Error Utils", () => {
+    afterAll(() => {
+        jest.resetAllMocks()
+    });
+
     describe("handleZodError", () => {
         it("should return the first validation error message", () => {
             // Mock ZodError with input validation errors

@@ -24,6 +24,10 @@ describe('Error Middleware', () => {
         next = jest.fn();
     });
 
+    afterAll(() => {
+        jest.resetAllMocks()
+    });
+
     it('should handle HttpCustomError and send correct response', () => {
         const error = new HttpCustomError(400, "Bad Request");
         const next: NextFunction = jest.fn();
@@ -35,7 +39,7 @@ describe('Error Middleware', () => {
     
     });
 
-    it('should handle ZodError and send correct response', () => {
+    it('should handle input validation ZodError and send correct response', () => {
         const zodError = new ZodError([
             { message: "Name is required", path: ["email"], code: "invalid_type", expected: "string", received: "undefined" }
         ]);

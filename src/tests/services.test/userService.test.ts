@@ -14,15 +14,16 @@ jest.mock('../../models/blacklistedTokenModel');
 
 describe("User Service", () => {
     afterEach(() => {
-        jest.resetAllMocks();
+        jest.resetAllMocks()
     });
+
 
     describe("registerUser", () => {
         it("should successfully register a new user when email is unique", async () => {
             const userData: IUser = {
                 username: "john_doe",
-                email: "john.doe@example.com",
-                password: "password123",
+                email: "user@mail.com",
+                password: "password",
                 role: "user",
             };
 
@@ -42,8 +43,8 @@ describe("User Service", () => {
         it("should throw an error if the email is already in use", async () => {
             const userData: IUser = {
                 username: "john_doe",
-                email: "john.doe@example.com",
-                password: "password123",
+                email: "user@mail.com",
+                password: "password",
                 role: "user",
             };
 
@@ -59,8 +60,8 @@ describe("User Service", () => {
         it("should throw a server error if something goes wrong during registration", async () => {
             const userData: IUser = {
                 username: "john_doe",
-                email: "john.doe@example.com",
-                password: "password123",
+                email: "user@mail.com",
+                password: "password",
                 role: "user"
             };
 
@@ -68,7 +69,7 @@ describe("User Service", () => {
             // Simulating bcrypt hash failure
             (bcrypt.hash as jest.Mock).mockRejectedValue(dbError);
 
-            await expect(registerUser(userData)).rejects.toThrowError(
+            await expect(registerUser(userData)).rejects.toThrow(
                 new HttpCustomError(500, "Server error")
             );
         });
@@ -77,74 +78,71 @@ describe("User Service", () => {
     describe("userLogin", () => {
         it("should successfully log in the user and return a token", async () => {
             const userData: UserLogin = {
-                email: "john.doe@example.com",
-                password: "password123",
+                email: "user@mail.com",
+                password: "password",
             };
-
+        
             const user = {
-                id: "user123",
+                _id: "101",
                 email: userData.email,
-                password: await bcrypt.hash(userData.password, 10),
+                password: "hashedPassword",
             };
-
+        
             const token = "jwtTokenstring";
-            // Mocking fineOne user lookup
             (User.findOne as jest.Mock).mockResolvedValue(user);
-            // Mocking bcrypt compare password comparison success
-            (bcrypt.compare as jest.Mock).mockResolvedValue(true);
-            // Mocking JWT generation
+            (bcrypt.compare as jest.Mock).mockResolvedValue(true); // Ensure bcrypt.compare works correctly
             (generateToken as jest.Mock).mockReturnValue(token);
-
+        
             const result = await userLogin(userData);
-
+        
             expect(result).toBe(token);
         });
 
         it("should throw an error if the user is not found", async () => {
             const userData: UserLogin = {
-                email: "john.doe@example.com",
-                password: "password123",
+                email: "user@mail.com",
+                password: "password",
             };
             // Mocking findOne to return null - user not found
             (User.findOne as jest.Mock).mockResolvedValue(null);
 
-            await expect(userLogin(userData)).rejects.toThrowError(
+            await expect(userLogin(userData)).rejects.toThrow(
                 new HttpCustomError(404, "Profile do not exist")
             );
         });
 
         it("should throw an error if the password is incorrect", async () => {
             const userData: UserLogin = {
-                email: "john.doe@example.com",
-                password: "password123",
+                email: "user@mail.com",
+                password: "password",
             };
 
             const user = {
-                id: "user123",
+                _id: "101",
                 email: userData.email,
-                password: await bcrypt.hash("wrongpassword", 10),
+                password: "hashedPassword",
             };
             // Mocking findOne user lookup
             (User.findOne as jest.Mock).mockResolvedValue(user);
             // Mocking bcrypt password comparison failure
             (bcrypt.compare as jest.Mock).mockResolvedValue(false);
 
-            await expect(userLogin(userData)).rejects.toThrowError(
+            await expect(userLogin(userData)).rejects.toThrow(
                 new HttpCustomError(400, "Incorrect email or password")
             );
         });
 
         it("should throw a server error if something goes wrong during login", async () => {
             const userData: UserLogin = {
-                email: "john.doe@example.com",
-                password: "password123",
+                email: "user@mail.com",
+                password: "password",
             };
 
             const dbError = new HttpCustomError(500, "Database error");
             // Simulating DB failure
             (User.findOne as jest.Mock).mockRejectedValue(dbError);
 
-            await expect(userLogin(userData)).rejects.toThrowError(
+            await expect(userLogin(userData)).rejects.toThrow(
                 new HttpCustomError(500, "Database error")
             );
         });
@@ -167,7 +165,7 @@ describe("User Service", () => {
             // Mocking to Simulate DB failure
             (BlacklistedToken.prototype.save as jest.Mock).mockRejectedValue(dbError);
 
-            await expect(userLogout(token)).rejects.toThrowError(
+            await expect(userLogout(token)).rejects.toThrow(
                 new HttpCustomError(500, "Database error")
             );
         });
@@ -176,7 +174,7 @@ describe("User Service", () => {
     describe("getCurrentUser", () => {
         it("should return the current user's details", async () => {
             const userId = "101";
-            const user = { id: userId, email: "john.doe@example.com", username: "john_doe" };
+            const user = { id: userId, email: "user@mail.com", username: "john_doe" };
             // Mocking findOne for user lookup
             (User.findOne as jest.Mock).mockResolvedValue(user);
 
@@ -191,7 +189,7 @@ describe("User Service", () => {
             // Mocking user not found - null
             (User.findOne as jest.Mock).mockResolvedValue(null);
 
-            await expect(getCurrentUser(userId)).rejects.toThrowError(
+            await expect(getCurrentUser(userId)).rejects.toThrow(
                 new HttpCustomError(404, "User not found")
             );
         });
@@ -203,7 +201,7 @@ describe("User Service", () => {
             // Mock findOne, simulate DB failure
             (User.findOne as jest.Mock).mockRejectedValue(dbError);
 
-            await expect(getCurrentUser(userId)).rejects.toThrowError(
+            await expect(getCurrentUser(userId)).rejects.toThrow(
                 new HttpCustomError(500, "Database error")
             );
         });
