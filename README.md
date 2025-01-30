@@ -59,7 +59,7 @@ cd store-app
 
 
 ## Contribution
-    If you would like to contribute:
+You can contribute to the project
 
 1. Fork the repository.
 2. Create a new branch (git checkout -b feature/feature-name).
