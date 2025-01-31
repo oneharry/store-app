@@ -35,10 +35,6 @@ cd store-app
    npm install
    ```
    
-    Or run the container
-
-    ```bash
-    docker-compose up --build
 3. Enter the MongoDB variable in an `.env` file
    ```
     MONGODB_USERNAME="your username"
@@ -52,7 +48,11 @@ cd store-app
     ```bash
     npm run dev
     ```
+   Or run in the container
 
+    ```bash
+    docker-compose up
+    ```
 ## Usage
     See the complete usage  [Documentation](https://postmanlink.com)
 
