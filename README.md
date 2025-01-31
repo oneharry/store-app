@@ -1,5 +1,5 @@
 # Store Management API
-A simple RESTful API to manage products in a store. It's built with Typescript, Express.js and MongoDB and other libraries such JWT for authenticaton, Zod for input validation.
+A simple RESTful API to manage products in a store. It's a containerized app built with Typescript, Express.js and MongoDB and other libraries such JWT for authentication, Zod for input validation. 
 
 
 ## Features
@@ -21,6 +21,7 @@ A simple RESTful API to manage products in a store. It's built with Typescript, 
 - **bcrypt** - Password hashing
 - **Zod** - Input validation
 - **Jest** - For unit testing
+- **Docker** - Containerization
 
 ## Installation
 
@@ -54,7 +55,7 @@ cd store-app
     docker-compose up
     ```
 ## Usage
-    See the complete usage  [Documentation](https://postmanlink.com)
+    See the complete usage  [Documentation](https://documenter.getpostman.com/view/16000236/2sAYX2N4VW)
 
 ## Testing
 1. Run unit test
