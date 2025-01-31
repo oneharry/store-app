@@ -34,6 +34,11 @@ cd store-app
    ```bash
    npm install
    ```
+   
+    Or run the container
+
+    ```bash
+    docker-compose up --build
 3. Enter the MongoDB variable in an `.env` file
    ```
     MONGODB_USERNAME="your username"
